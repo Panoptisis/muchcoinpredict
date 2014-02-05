@@ -41,7 +41,7 @@
 					<hr>
 
 					<b>Much donate</b><br>
-					[Insert thinger]
+					DGt1jovkXebFKrbrKq2o6NoiGsEekz3kLc
 				</div>
 			</div>
 			<div class="row">

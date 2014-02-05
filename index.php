@@ -51,7 +51,8 @@
 					<b>A note on accuracy</b><br>
 					This calculator uses a slightly different version of the Mersenne
 					Twister random number generator than the one used in the real dogecoin
-					program. That being said, this page should be reasonably accuate.
+					program. That being said, this page should be reasonably accuate
+					(&plusmn;&#x110;1,000).
 				</div>
 			</div>
 		</div>

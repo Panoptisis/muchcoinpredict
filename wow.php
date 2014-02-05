@@ -64,21 +64,27 @@ function getBlockValue($height, $previousHash)
 	return 1 + $rand;
 }
 
-$payload = file_get_contents('http://dogechain.info/chain/Dogecoin/get_blocks');
-$payload = json_decode($payload, true);
-$block = $payload['aaData'][0];
-$height = $block[0] + 1;
-$hash = $block[8];
-$value = getBlockValue($height, $hash);
+// We use cached data because we're nice shibes
+$result = apc_fetch('muchcoinpredict_results');
+if (!$result)
+{
+	$payload = file_get_contents('http://dogechain.info/chain/Dogecoin/get_blocks');
+	$payload = json_decode($payload, true);
+	$block = $payload['aaData'][0];
+	$height = $block[0] + 1;
+	$hash = $block[8];
+	$value = getBlockValue($height, $hash);
 
-$result = [
-	'height'      => $height,
-	'hash'        => $hash,
-	'value'       => $value,
-	'prettyValue' => number_format($value, 2),
-];
+	$result = json_encode([
+		'height'      => $height,
+		'hash'        => $hash,
+		'value'       => $value,
+		'prettyValue' => number_format($value, 2),
+	]);
+	apc_add('muchcoinpredict_results', $result, 45);
+}
 
 header('Cache-Control: no-cache, must-revalidate');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Content-Type: application/json');
-echo json_encode($result);
+echo $result;

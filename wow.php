@@ -81,7 +81,7 @@ if (!$result)
 		'value'       => $value,
 		'prettyValue' => number_format($value, 2),
 	]);
-	apc_add('muchcoinpredict_results', $result, 45);
+	apc_add('muchcoinpredict_results', $result, 30);
 }
 
 header('Cache-Control: no-cache, must-revalidate');

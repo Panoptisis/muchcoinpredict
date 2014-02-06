@@ -1,3 +1,5 @@
-body{background-color:#d8bd62}
+body{background-color:#d8bd62;padding:5px 0 15px}
 .hash-output{word-wrap:break-word}
 hr{border-color:#b79f52}
+#history th{text-align:center}
+#history th,#history td{border-color:#cbb05b}

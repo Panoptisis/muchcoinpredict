@@ -64,22 +64,71 @@ function getBlockValue($height, $previousHash)
 	return 1 + $rand;
 }
 
+/**
+ * Gets the actual value of a hash if it's available.
+ *
+ * @param  string         $hash   The hash of the block to look up 
+ * @return string|boolean         The actual amount produced by this block, or 
+ */
+function getActualBlockValue($hash)
+{
+	$html = file_get_contents('http://dogechain.info/block/'. $hash);
+	if (preg_match('@Generation: (\d+(?:\.\d+)?)@', $html, $matches))
+	{
+		return $matches[1];
+	}
+
+	return false;
+}
+
 // We use cached data because we're nice shibes
 $result = apc_fetch('muchcoinpredict_results');
 if (!$result)
 {
 	$payload = file_get_contents('http://dogechain.info/chain/Dogecoin/get_blocks');
 	$payload = json_decode($payload, true);
-	$block = $payload['aaData'][0];
+	$blocks = $payload['aaData'];
+	$block = $blocks[0];
 	$height = $block[0] + 1;
 	$hash = $block[8];
 	$value = getBlockValue($height, $hash);
+
+	// Let's make history (if we need to)
+	$history = [];
+	for ($i = count($blocks) - 2; $i >= 0; $i--)
+	{
+		$currentBlock = $blocks[$i];
+		$previousBlock = $blocks[$i + 1];
+		$block = apc_fetch('muchcoinpredict_history_'. $currentBlock[0]);
+		if (!$block)
+		{
+			$actualValue = getActualBlockValue($currentBlock[8]);
+			$predictedValue = getBlockValue($currentBlock[0], $previousBlock[8]);
+			if ($actualValue)
+			{
+				$block = [
+					'height'         => $currentBlock[0],
+					'hash'           => $currentBlock[8],
+					'predictedValue' => number_format($predictedValue, 2),
+					'actualValue'    => number_format($actualValue, 2),
+					'diff'           => number_format(abs($actualValue - $predictedValue), 2),
+				];
+				apc_add('muchcoinpredict_history_'. $currentBlock[0], $block, 300);
+			}
+		}
+
+		if ($block)
+		{
+			$history[] = $block;
+		}
+	}
 
 	$result = json_encode([
 		'height'      => $height,
 		'hash'        => $hash,
 		'value'       => $value,
 		'prettyValue' => number_format($value, 2),
+		'history'     => $history,
 	]);
 	apc_add('muchcoinpredict_results', $result, 30);
 }

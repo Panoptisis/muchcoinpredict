@@ -48,6 +48,21 @@
 				<div class="col-md-6 col-md-offset-3">
 					<hr>
 
+					<div id="history">
+						<b>History</b><br>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Height</th>
+									<th>Actual</th>
+									<th>Predicted</th>
+									<th>Difference</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+
 					<b>A note on accuracy</b><br>
 					This calculator uses a slightly different version of the Mersenne
 					Twister random number generator than the one used in the real dogecoin
@@ -65,12 +80,24 @@
 				var nextValue = $('#next-value');
 				var nextHeight = $('#next-height');
 				var previousHash = $('#previous-hash');
+				var history = $('#history');
 
 				var fetchData = function(data)
 				{
 					nextValue.html("&#x110;" + data.prettyValue);
 					nextHeight.html(data.height);
 					previousHash.html(data.hash);
+
+					history.find('tbody').html('');
+					$.each(data.history.reverse(), function(index, info)
+					{
+						history.find('tbody').append('<tr>'
+							+ '<td>' + info.height + '</td>'
+							+ '<td>&#x110;' + info.actualValue + '</td>'
+							+ '<td>&#x110;' + info.predictedValue + '</td>'
+							+ '<td>' + info.diff + '</td>'
+							+ '</tr>');
+					});
 
 					setTimeout(function()
 					{

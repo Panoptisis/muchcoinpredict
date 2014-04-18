@@ -31,28 +31,14 @@ function getBlockValue($height, $previousHash)
 		$seed = hexdec(substr($previousHash, 7, 7));
 		$rand = generateRand($seed, 999999);
 	}
-	else if ($height < 200000)
+	else if ($height < 145000)
 	{
 		$seed = hexdec(substr($previousHash, 7, 7));
 		$rand = generateRand($seed, 499999);
 	}
-	else if ($height < 300000)
-	{
-		$seed = hexdec(substr($previousHash, 6, 7));
-		$rand = generateRand($seed, 249999);
-	}
-	else if ($height < 400000)
-	{
-		$seed = hexdec(substr($previousHash, 7, 7));
-		$rand = generateRand($seed, 124999);
-	}
-	else if ($height < 500000)
-	{
-		$seed = hexdec(substr($previousHash, 7, 7));
-		$rand = generateRand($seed, 62499);
-	}
 	else if ($height < 600000)
 	{
+		// todo: This isn't updated
 		$seed = hexdec(substr($previousHash, 6, 7));
 		$rand = generateRand($seed, 31249);
 	}

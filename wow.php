@@ -38,9 +38,7 @@ function getBlockValue($height, $previousHash)
 	}
 	else if ($height < 600000)
 	{
-		// todo: This isn't updated
-		$seed = hexdec(substr($previousHash, 6, 7));
-		$rand = generateRand($seed, 31249);
+		$rand = 500000 >> ($height / 100000);
 	}
 	else
 	{
